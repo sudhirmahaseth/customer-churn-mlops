@@ -20,11 +20,19 @@ jobs:
         python-version: '3.12'
         cache: 'pip'
 
+    # 🛠️ यहाँ बदलाव किया गया है ताकि डिपेंडेंसीज़ आसानी से रिजॉल्व हो सकें
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
-        pip install pytest pytest-asyncio fastapi testclient
+        
+        # 1. मुख्य और भारी डेटा साइंस लाइब्रेरीज को बिना कड़े वर्जन्स (==) के इंस्टॉल करना
+        pip install pandas numpy scikit-learn xgboost mlflow dvc fastapi uvicorn
+        
+        # 2. बाकी की बची हुई आवश्यकताओं को आपकी फाइल से इंस्टॉल करना (यदि कोई हो)
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        
+        # 3. टेस्टिंग के लिए जरूरी लाइब्रेरीज़ को पक्का इंस्टॉल करना
+        pip install pytest pytest-asyncio testclient httpx
 
     - name: Run Code Tests
       run: |
@@ -45,7 +53,7 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    # 🎯 डॉकर बिल्ड के लिए वर्किंग डमी मॉडल और आर्टिफैक्ट्स जनरेट करना (ताकि लाइव ऐप क्रैश न हो)
+    # 🎯 डॉकर बिल्ड के लिए वर्किंग डमी मॉडल और आर्टिफैक्ट्स जनरेट करना
     - name: Create Valid Dummy Artifacts for Docker Build
       run: |
         mkdir -p artifacts models
