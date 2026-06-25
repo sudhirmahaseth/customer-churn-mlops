@@ -19,12 +19,11 @@ jobs:
       with:
         python-version: '3.12'
 
-    # 🚀 वर्जन्स को लचीला बनाकर टाइमआउट फिक्स किया गया
+    # 🚀 'testclient' हटाकर फिक्स कर दिया गया है
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        # मुख्य डेटा साइंस पैकेजेस को सीधे बिना सख्त वर्जन्स के इंस्टॉल करें (ताकि यह 1 मिनट में पूरा हो जाए)
-        pip install pandas numpy scikit-learn xgboost mlflow dvc fastapi uvicorn pytest pytest-asyncio testclient httpx
+        pip install pandas numpy scikit-learn xgboost mlflow dvc fastapi uvicorn pytest pytest-asyncio httpx
 
     - name: Run Code Tests
       run: |
@@ -48,9 +47,9 @@ jobs:
       run: |
         mkdir -p artifacts models
         python -c "import pandas as pd; pd.DataFrame(columns=['gender', 'SeniorCitizen', 'Partner', 'Dependents', 'tenure', 'PhoneService', 'MultipleLines', 'InternetService', 'OnlineSecurity', 'OnlineBackup', 'DeviceProtection', 'TechSupport', 'StreamingTV', 'StreamingMovies', 'Contract', 'PaperlessBilling', 'PaymentMethod', 'MonthlyCharges', 'TotalCharges', 'charges_per_tenure', 'Churn']).to_csv('artifacts/train.csv', index=False)"
-        python -c "import pickle; 
-        class DummyModel:
-            def predict(self, df): return [1]
+        python -c "import pickle; \
+        class DummyModel: \
+            def predict(self, df): return [1] \
         pickle.dump(DummyModel(), open('models/model.pkl', 'wb'))"
 
     - name: Build and Push Docker Image
