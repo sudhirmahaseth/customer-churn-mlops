@@ -1,0 +1,7 @@
+[core]
+    remote = myremote
+['remote "myremote"']
+    url = https://dagshub.com/sudhirmahaseth/customer-churn-mlops.dvc
+    auth = basic
+    user = sudhirmahaseth
+    password = c84f931173b1277836926af13d0ce4b8446ade72
