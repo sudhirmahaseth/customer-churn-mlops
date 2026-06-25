@@ -1,11 +1,12 @@
 import uvicorn
+import os
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from src.prediction_pipeline import CustomData, PredictionPipeline
+from src.prediction_pipeline import PredictionPipeline
 from src.logger import logger
 
-# 1. FastAPI ऐप इनिशियलाइज करें (आपके टेस्ट_होम के मुताबिक टाइटल्स और रूट्स)
+# 1. FastAPI ऐप इनिशियलाइज करें
 app = FastAPI(title="Customer Churn MLOps API", version="1.0.0")
 
 # 2. इनपुट डेटा वैलिडेशन के लिए Pydantic Model
@@ -35,24 +36,21 @@ class ChurnInput(BaseModel):
 def read_root():
     return {"status": "API is running successfully!"}
 
-# 3. अपडेटेड प्रेडिक्ट रूट जो टेस्ट और प्रोडक्शन पाइपलाइन दोनों को संभालेगा
+# 3. अपडेटेड प्रेडिक्ट रूट (बिना CustomData के, सीधा DataFrame कन्वर्शन)
 @app.post("/predict")
 def predict(data: ChurnInput):
     try:
         logger.info("API received a new prediction request")
         
-        # Pydantic डेटा को dict में बदलकर कस्टम डेटा ऑब्जेक्ट बनाना
+        # Pydantic डेटा को dict में बदलें
         data_dict = data.model_dump()
         
-        # 🎯 सुरक्षा के लिए: अगर टेस्ट एनवायरनमेंट से 'charges_per_tenure' नहीं आ रहा है, 
-        # और आपकी CustomData क्लास इसे ढूंढ रही है, तो इसे यहीं जोड़ देते हैं।
+        # Feature Engineering: 'charges_per_tenure' कैलकुलेट करें
         if "charges_per_tenure" not in data_dict:
             data_dict["charges_per_tenure"] = data_dict["TotalCharges"] / (data_dict["tenure"] if data_dict["tenure"] > 0 else 1)
 
-        custom_data = CustomData(**data_dict)
-        
-        # डेटा को DataFrame में कन्वर्ट करें
-        df = custom_data.get_data_as_data_frame()
+        # 🎯 डायरेक्ट और क्लीन तरीका: डिक्शनरी को सीधे pandas DataFrame में कन्वर्ट करें
+        df = pd.DataFrame([data_dict])
         
         # प्रेडिक्शन पाइपलाइन रन करें
         pipeline = PredictionPipeline()
@@ -60,8 +58,6 @@ def predict(data: ChurnInput):
         
         result = int(prediction[0])
         
-        # 🎯 टेस्ट स्क्रिप्ट 'assert "status" in json_response' को चेक कर रही है।
-        # यहाँ हम स्टेटस में "Success" या आपका कस्टम मैसेज भेज सकते हैं।
         return {
             "prediction": result,
             "status": "Success"
