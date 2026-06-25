@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/Projects/customer-churn-mlops/mlruns/0/ee864414841b46fca0212cf7f288678c/artifacts
+end_time: 1782232172265
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: ee864414841b46fca0212cf7f288678c
+run_name: chill-owl-117
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1782232157605
+status: 3
+tags: []
+user_id: Mobineers

@@ -1,0 +1,97 @@
+[ 2026-06-24 13:21:24,942 ] INFO - Reading dataset
+[ 2026-06-24 13:21:25,056 ] INFO - Dataset saved
+[ 2026-06-24 13:36:09,863 ] INFO - Reading data from artifacts/raw.csv
+[ 2026-06-24 13:36:09,905 ] INFO - Dropping missing values and applying get_dummies
+[ 2026-06-24 13:36:55,942 ] INFO - Preprocessing completed. Saved to artifacts/processed.csv
+[ 2026-06-24 15:21:06,666 ] INFO - Reading processed data from artifacts/processed.csv
+[ 2026-06-24 15:21:38,079 ] INFO - Creating new feature: charges_per_tenure
+[ 2026-06-24 15:21:38,098 ] INFO - Splitting dataset into train and test sets
+[ 2026-06-24 15:22:24,140 ] INFO - Feature engineering completed. Train/Test shapes: (5634, 13621) / (1409, 13621)
+[ 2026-06-24 15:25:57,287 ] INFO - Loading training data from artifacts/train.csv
+[ 2026-06-24 15:27:20,860 ] INFO - Loading training data from artifacts/train.csv
+[ 2026-06-24 15:31:50,290 ] INFO - Reading processed data from artifacts/processed.csv
+[ 2026-06-24 15:32:25,024 ] INFO - Creating new feature: charges_per_tenure
+[ 2026-06-24 15:32:25,040 ] INFO - Splitting dataset into train and test sets
+[ 2026-06-24 15:33:09,584 ] INFO - Feature engineering completed. Train/Test shapes: (5634, 13621) / (1409, 13621)
+[ 2026-06-24 15:33:46,881 ] INFO - Loading training data from artifacts/train.csv
+[ 2026-06-24 15:34:47,015 ] INFO - Reading processed data from artifacts/processed.csv
+[ 2026-06-24 15:35:19,472 ] INFO - Creating new feature: charges_per_tenure
+[ 2026-06-24 15:35:19,478 ] INFO - Splitting dataset into train and test sets
+[ 2026-06-24 15:36:04,823 ] INFO - Feature engineering completed. Train/Test shapes: (5634, 13621) / (1409, 13621)
+[ 2026-06-24 15:36:14,299 ] INFO - Loading training data from artifacts/train.csv
+[ 2026-06-24 15:40:40,646 ] INFO - Reading data from artifacts/raw.csv
+[ 2026-06-24 15:40:40,689 ] INFO - Dropping missing values
+[ 2026-06-24 15:40:40,701 ] INFO - Target column 'Churn' found. Encoding it to 0 and 1.
+[ 2026-06-24 15:41:28,149 ] INFO - Preprocessing completed. Saved to artifacts/processed.csv
+[ 2026-06-24 15:41:45,320 ] INFO - Reading processed data from artifacts/processed.csv
+[ 2026-06-24 15:42:14,692 ] INFO - Creating new feature: charges_per_tenure
+[ 2026-06-24 15:42:14,704 ] INFO - Splitting dataset into train and test sets
+[ 2026-06-24 15:43:03,740 ] INFO - Feature engineering completed. Train/Test shapes: (5634, 13603) / (1409, 13603)
+[ 2026-06-24 15:43:31,315 ] INFO - Loading training data from artifacts/train.csv
+[ 2026-06-24 15:43:58,348 ] INFO - Starting MLflow experiment run...
+[ 2026-06-24 15:44:00,578 ] INFO - Training Random Forest Model...
+[ 2026-06-24 15:44:39,846 ] INFO - Saving trained model to models/model.pkl
+[ 2026-06-24 15:47:48,997 ] INFO - Loading test data from artifacts/test.csv
+[ 2026-06-24 15:47:55,026 ] INFO - Loading model from models/model.pkl
+[ 2026-06-24 15:47:55,443 ] INFO - Making predictions on test data...
+[ 2026-06-24 16:00:30,931 ] INFO - Loading training data from artifacts/train.csv
+[ 2026-06-24 16:00:55,040 ] INFO - Starting MLflow experiment run...
+[ 2026-06-24 16:00:57,097 ] INFO - Training Random Forest Model...
+[ 2026-06-24 16:01:02,137 ] INFO - Logging model to MLflow Artifacts...
+[ 2026-06-24 16:01:21,807 ] INFO - Saving trained model locally to models/model.pkl
+[ 2026-06-24 16:09:17,056 ] INFO - Loading test data from artifacts/test.csv
+[ 2026-06-24 16:09:23,375 ] INFO - Loading model from models/model.pkl
+[ 2026-06-24 16:09:23,745 ] INFO - Making predictions on test data...
+[ 2026-06-24 16:09:23,884 ] INFO - Connecting to the latest MLflow run to log test metrics...
+[ 2026-06-24 16:09:25,032 ] INFO - Successfully logged test metrics to MLflow Run ID: 622574378973420381d7c8c349d2d378
+[ 2026-06-24 16:12:55,244 ] INFO - Loading training data from artifacts/train.csv
+[ 2026-06-24 16:13:25,966 ] INFO - Starting MLflow experiment run...
+[ 2026-06-24 16:13:27,322 ] INFO - Training Random Forest Model...
+[ 2026-06-24 16:13:31,633 ] INFO - Logging model to MLflow Artifacts...
+[ 2026-06-24 16:13:41,327 ] INFO - Saving trained model locally to models/model.pkl
+[ 2026-06-24 16:14:38,990 ] INFO - Loading test data from artifacts/test.csv
+[ 2026-06-24 16:14:45,744 ] INFO - Loading model from models/model.pkl
+[ 2026-06-24 16:14:46,120 ] INFO - Making predictions on test data...
+[ 2026-06-24 16:14:46,320 ] INFO - Connecting to the latest MLflow run to log test metrics...
+[ 2026-06-24 16:14:47,901 ] INFO - Successfully logged test metrics to MLflow Run ID: f5b220a301a147dab0e77c34afa9ff37
+[ 2026-06-24 16:36:17,300 ] INFO - API received a new prediction request
+[ 2026-06-24 16:36:17,311 ] INFO - Custom data successfully converted to DataFrame
+[ 2026-06-24 16:36:17,311 ] INFO - Loading trained model from models\model.pkl for prediction...
+[ 2026-06-24 16:36:20,225 ] INFO - Making prediction...
+[ 2026-06-24 16:36:20,225 ] ERROR - Error occurred in PredictionPipeline: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- Contract
+- Dependents
+- DeviceProtection
+- InternetService
+- MultipleLines
+- ...
+Feature names seen at fit time, yet now missing:
+- Contract_One year
+- Contract_Two year
+- Dependents_Yes
+- DeviceProtection_No internet service
+- DeviceProtection_Yes
+- ...
+
+[ 2026-06-24 16:36:20,225 ] ERROR - Error in API execution: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- Contract
+- Dependents
+- DeviceProtection
+- InternetService
+- MultipleLines
+- ...
+Feature names seen at fit time, yet now missing:
+- Contract_One year
+- Contract_Two year
+- Dependents_Yes
+- DeviceProtection_No internet service
+- DeviceProtection_Yes
+- ...
+
+[ 2026-06-24 16:42:30,363 ] INFO - API received a new prediction request
+[ 2026-06-24 16:42:30,376 ] INFO - Custom data successfully converted to DataFrame
+[ 2026-06-24 16:42:30,376 ] INFO - Loading trained model from models\model.pkl for prediction...
+[ 2026-06-24 16:42:36,309 ] INFO - Applying One-Hot Encoding to input features...
+[ 2026-06-24 16:42:36,360 ] INFO - Making prediction on aligned features...

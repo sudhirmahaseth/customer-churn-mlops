@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/Projects/customer-churn-mlops/mlruns/0/25bd618ef8e542a09dffb8d896c92f6d/artifacts
+end_time: 1782296079903
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 25bd618ef8e542a09dffb8d896c92f6d
+run_name: enthused-sponge-172
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1782296040459
+status: 3
+tags: []
+user_id: Mobineers

@@ -1,0 +1,14 @@
+artifact_uri: file:///D:/Projects/customer-churn-mlops/mlruns/0/622574378973420381d7c8c349d2d378/artifacts
+end_time: 1782297565030
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 622574378973420381d7c8c349d2d378
+run_name: bright-snake-577
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1782297056806
+status: 3
+tags: []
+user_id: Mobineers
