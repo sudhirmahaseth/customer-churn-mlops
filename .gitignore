@@ -1,6 +1,7 @@
 # Ignore local data and model artifacts
-data/
-artifacts/
-models/
-*.csv
-*.pkl
+# फोल्डर ब्लॉक करने के बजाय सिर्फ असली फाइल ब्लॉक करेंगे
+models/model.pkl
+data/churn.csv
+data/processed.csv
+artifacts/train.csv
+artifacts/test.csv
