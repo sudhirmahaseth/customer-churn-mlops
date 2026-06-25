@@ -1,0 +1,31 @@
+# Git और GitHub कॉन्फ़िगरेशन
+.git
+.github
+.gitignore
+
+# पायथन और वर्चुअल एनवायरनमेंट की फ़ाइलें
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# डेटा और भारी ML मॉडल्स/आर्टीफ़ैक्ट्स (इन्हें इमेज में नहीं डालना है)
+data/
+artifacts/
+models/
+.dvc/
+*.csv
+*.xlsx
+*.pkl
+*.h5
+*.joblib
+
+# OS जनरेटेड फ़ाइलें
+.DS_Store
+Thumbs.db
