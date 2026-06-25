@@ -19,7 +19,7 @@ jobs:
       with:
         python-version: '3.12'
 
-    # 🚀 'testclient' हटाकर फिक्स कर दिया गया है
+    # ✅ 'testclient' हटाकर फिक्स कर दिया गया है
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
@@ -43,14 +43,12 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+    # ✅ पायथन/पैंडाज निर्भरता को हटाकर सीधे Bash से डमी फाइल्स जनरेट करना (फ़ास्ट और एरर-फ़्री)
     - name: Create Valid Dummy Artifacts for Docker Build
       run: |
         mkdir -p artifacts models
-        python -c "import pandas as pd; pd.DataFrame(columns=['gender', 'SeniorCitizen', 'Partner', 'Dependents', 'tenure', 'PhoneService', 'MultipleLines', 'InternetService', 'OnlineSecurity', 'OnlineBackup', 'DeviceProtection', 'TechSupport', 'StreamingTV', 'StreamingMovies', 'Contract', 'PaperlessBilling', 'PaymentMethod', 'MonthlyCharges', 'TotalCharges', 'charges_per_tenure', 'Churn']).to_csv('artifacts/train.csv', index=False)"
-        python -c "import pickle; \
-        class DummyModel: \
-            def predict(self, df): return [1] \
-        pickle.dump(DummyModel(), open('models/model.pkl', 'wb'))"
+        echo "gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,charges_per_tenure,Churn" > artifacts/train.csv
+        echo "dummy model content" > models/model.pkl
 
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v5
