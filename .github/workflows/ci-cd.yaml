@@ -19,7 +19,6 @@ jobs:
       with:
         python-version: '3.12'
 
-    # ✅ 'testclient' हटाकर फिक्स कर दिया गया है
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
@@ -43,19 +42,16 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    # ✅ पायथन/पैंडाज निर्भरता को हटाकर सीधे Bash से डमी फाइल्स जनरेट करना (फ़ास्ट और एरर-फ़्री)
-    - name: Create Valid Dummy Artifacts for Docker Build
-      run: |
-        mkdir -p artifacts models
-        echo "gender,SeniorCitizen,Partner,Dependents,tenure,PhoneService,MultipleLines,InternetService,OnlineSecurity,OnlineBackup,DeviceProtection,TechSupport,StreamingTV,StreamingMovies,Contract,PaperlessBilling,PaymentMethod,MonthlyCharges,TotalCharges,charges_per_tenure,Churn" > artifacts/train.csv
-        echo "dummy model content" > models/model.pkl
-
+    # 🎯 असली बदलाव: डमी स्टेप को हटा दिया गया है और Docker Build में Secrets पास किए गए हैं
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v5
       with:
         context: .
         file: ./Dockerfile
         push: true
+        build-args: |
+          DAGSHUB_USERNAME=${{ secrets.DAGSHUB_USERNAME }}
+          DAGSHUB_TOKEN=${{ secrets.DAGSHUB_TOKEN }}
         tags: |
           ${{ secrets.DOCKERHUB_USERNAME }}/customer-churn-app:latest
           ${{ secrets.DOCKERHUB_USERNAME }}/customer-churn-app:${{ github.sha }}
