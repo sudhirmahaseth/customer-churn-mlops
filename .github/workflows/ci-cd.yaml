@@ -42,12 +42,11 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    # 🎯 असली बदलाव: डमी स्टेप को हटा दिया गया है और Docker Build में Secrets पास किए गए हैं
+    # 🎯 परफेक्ट सिंटैक्स: यहाँ build-args और tags दोनों को एकदम क्लीन कर दिया गया है
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v5
       with:
         context: .
-        file: ./Dockerfile
         push: true
         build-args: |
           DAGSHUB_USERNAME=${{ secrets.DAGSHUB_USERNAME }}
