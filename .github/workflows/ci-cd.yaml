@@ -18,21 +18,13 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: '3.12'
-        cache: 'pip'
 
-    # 🛠️ यहाँ बदलाव किया गया है ताकि डिपेंडेंसीज़ आसानी से रिजॉल्व हो सकें
+    # 🚀 वर्जन्स को लचीला बनाकर टाइमआउट फिक्स किया गया
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
-        
-        # 1. मुख्य और भारी डेटा साइंस लाइब्रेरीज को बिना कड़े वर्जन्स (==) के इंस्टॉल करना
-        pip install pandas numpy scikit-learn xgboost mlflow dvc fastapi uvicorn
-        
-        # 2. बाकी की बची हुई आवश्यकताओं को आपकी फाइल से इंस्टॉल करना (यदि कोई हो)
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-        
-        # 3. टेस्टिंग के लिए जरूरी लाइब्रेरीज़ को पक्का इंस्टॉल करना
-        pip install pytest pytest-asyncio testclient httpx
+        # मुख्य डेटा साइंस पैकेजेस को सीधे बिना सख्त वर्जन्स के इंस्टॉल करें (ताकि यह 1 मिनट में पूरा हो जाए)
+        pip install pandas numpy scikit-learn xgboost mlflow dvc fastapi uvicorn pytest pytest-asyncio testclient httpx
 
     - name: Run Code Tests
       run: |
@@ -46,26 +38,21 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    # 🔑 Docker Hub पर लॉग-इन करना
     - name: Log in to Docker Hub
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-    # 🎯 डॉकर बिल्ड के लिए वर्किंग डमी मॉडल और आर्टिफैक्ट्स जनरेट करना
     - name: Create Valid Dummy Artifacts for Docker Build
       run: |
         mkdir -p artifacts models
-        # 1. डमी train.csv ढांचा तैयार करना
         python -c "import pandas as pd; pd.DataFrame(columns=['gender', 'SeniorCitizen', 'Partner', 'Dependents', 'tenure', 'PhoneService', 'MultipleLines', 'InternetService', 'OnlineSecurity', 'OnlineBackup', 'DeviceProtection', 'TechSupport', 'StreamingTV', 'StreamingMovies', 'Contract', 'PaperlessBilling', 'PaymentMethod', 'MonthlyCharges', 'TotalCharges', 'charges_per_tenure', 'Churn']).to_csv('artifacts/train.csv', index=False)"
-        # 2. एक डमी मॉडल क्लास बनाकर उसका .pkl सेव करना जिसमें predict मेथड हो
         python -c "import pickle; 
         class DummyModel:
             def predict(self, df): return [1]
         pickle.dump(DummyModel(), open('models/model.pkl', 'wb'))"
 
-    # 🐳 डॉकर इमेज बिल्ड करना और Docker Hub पर पुश करना
     - name: Build and Push Docker Image
       uses: docker/build-push-action@v5
       with:
