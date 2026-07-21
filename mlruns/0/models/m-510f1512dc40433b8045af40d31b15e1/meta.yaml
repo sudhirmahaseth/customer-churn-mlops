@@ -1,0 +1,10 @@
+artifact_location: file:///D:/Projects/customer-churn-mlops/mlruns/0/models/m-510f1512dc40433b8045af40d31b15e1/artifacts
+creation_timestamp: 1782297811692
+experiment_id: '0'
+last_updated_timestamp: 1782297821148
+model_id: m-510f1512dc40433b8045af40d31b15e1
+model_type: null
+name: model
+source_run_id: f5b220a301a147dab0e77c34afa9ff37
+status: 2
+status_message: null

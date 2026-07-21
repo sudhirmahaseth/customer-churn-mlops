@@ -1,0 +1,9 @@
+services:
+  churn-api:
+    image: saket1992/customer-churn-app:latest
+    container_name: customer_churn_fastapi
+    ports:
+      - "8080:8000"  # 👈 इसे 8000:8000 से बदलकर 8080:8000 कर दें
+    environment:
+      - ENV=production
+    restart: always

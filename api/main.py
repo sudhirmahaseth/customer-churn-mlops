@@ -1,71 +1,51 @@
-import uvicorn
 import os
-import pandas as pd
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from src.prediction_pipeline import PredictionPipeline
+import joblib
+import dvc.api
 from src.logger import logger
 
-# 1. FastAPI ऐप इनिशियलाइज करें
-app = FastAPI(title="Customer Churn MLOps API", version="1.0.0")
+class PredictionPipeline:
+    def __init__(self):
+        # 🎯 पाथ्स डिफाइन करें
+        self.model_path = os.path.join("models", "model.pkl")
+        self.preprocessor_path = os.path.join("models", "preprocessor.pkl")
+        
+        # 1. मॉडल लोड करें (अगर लोकल नहीं है तो DagsHub से लाइव स्ट्रीम करेगा)
+        self.model = self._load_artifact(self.model_path)
+        
+        # 2. प्रीप्रोसेसर लोड करें
+        self.preprocessor = self._load_artifact(self.preprocessor_path)
 
-# 2. इनपुट डेटा वैलिडेशन के लिए Pydantic Model
-class ChurnInput(BaseModel):
-    gender: str
-    SeniorCitizen: int
-    Partner: str
-    Dependents: str
-    tenure: int
-    PhoneService: str
-    MultipleLines: str
-    InternetService: str
-    OnlineSecurity: str
-    OnlineBackup: str
-    DeviceProtection: str
-    TechSupport: str
-    StreamingTV: str
-    StreamingMovies: str
-    Contract: str
-    PaperlessBilling: str
-    PaymentMethod: str
-    MonthlyCharges: float
-    TotalCharges: float
+    def _load_artifact(self, local_path):
+        """अगर फाइल लोकल नहीं मिलती, तो उसे DagsHub DVC Repository से लाइव लोड करेगा"""
+        if not os.path.exists(local_path):
+            logger.info(f"Artifact {local_path} not found locally. Streaming from DagsHub via DVC API...")
+            try:
+                # यह बिना लोकल क्रेडेंशियल्स के डैग्सहब से सीधे बाइनरी फ़ाइल स्ट्रीम कर लेगा
+                with dvc.api.open(
+                    path=local_path.replace("\\", "/"), # Windows/Linux पाथ कम्पैटिबिलिटी के लिए
+                    repo="https://dagshub.com/sudhirmahaseth/customer-churn-mlops.git",
+                    mode="rb"
+                ) as f:
+                    return joblib.load(f)
+            except Exception as e:
+                logger.error(f"Failed to stream artifact from DagsHub: {str(e)}")
+                raise e
+        else:
+            logger.info(f"Loading artifact from local path: {local_path}")
+            return joblib.load(local_path)
 
-# टेस्ट स्क्रिप्ट 'test_home' को पास करने के लिए रूट
-@app.get("/")
-def read_root():
-    return {"status": "API is running successfully!"}
-
-# 3. अपडेटेड प्रेडिक्ट रूट (बिना CustomData के, सीधा DataFrame कन्वर्शन)
-@app.post("/predict")
-def predict(data: ChurnInput):
-    try:
-        logger.info("API received a new prediction request")
-        
-        # Pydantic डेटा को dict में बदलें
-        data_dict = data.model_dump()
-        
-        # Feature Engineering: 'charges_per_tenure' कैलकुलेट करें
-        if "charges_per_tenure" not in data_dict:
-            data_dict["charges_per_tenure"] = data_dict["TotalCharges"] / (data_dict["tenure"] if data_dict["tenure"] > 0 else 1)
-
-        # 🎯 डायरेक्ट और क्लीन तरीका: डिक्शनरी को सीधे pandas DataFrame में कन्वर्ट करें
-        df = pd.DataFrame([data_dict])
-        
-        # प्रेडिक्शन पाइपलाइन रन करें
-        pipeline = PredictionPipeline()
-        prediction = pipeline.predict(df)
-        
-        result = int(prediction[0])
-        
-        return {
-            "prediction": result,
-            "status": "Success"
-        }
-        
-    except Exception as e:
-        logger.error(f"Error in API execution: {str(e)}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    def predict(self, features):
+        try:
+            logger.info("Transforming features using preprocessor...")
+            # अगर प्रीप्रोसेसर पाइपलाइन का हिस्सा है, तो पहले ट्रांसफॉर्म करें
+            if self.preprocessor:
+                # नोट: अगर आपका preprocessor.pkl स्केलर/इन्कोडर है, तो transform चलाएं
+                # अगर आपकी पाइपलाइन केवल मॉडल आधारित है, तो इसे अपने पुराने लॉजिक के अनुसार रखें
+                pass 
+            
+            logger.info("Making prediction using the model...")
+            prediction = self.model.predict(features)
+            return prediction
+        except Exception as e:
+            logger.error(f"Error in prediction pipeline: {str(e)}")
+            raise e
